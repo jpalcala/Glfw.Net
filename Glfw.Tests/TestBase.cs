@@ -11,7 +11,7 @@ namespace Glfw3.Tests
 
         internal static void Init()
         {
-            Glfw.ConfigureNativesDirectory("../../External/");
+            Glfw.ConfigureNativesDirectory("External/");
             Glfw.SetErrorCallback(ErrorCallback);
         }
 

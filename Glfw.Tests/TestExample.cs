@@ -7,7 +7,7 @@ class TestExample
     static void Main(string[] args)
     {
         // If the library isn't in the environment path we need to set it
-        Glfw.ConfigureNativesDirectory("../../External/");
+        Glfw.ConfigureNativesDirectory("External/");
 
         // Initialize the library
         if (!Glfw.Init())

@@ -19,12 +19,12 @@ namespace Glfw3.Tests
             [Option('s', HelpText = "Number of samples for MSAA")]
             public int Samples { get; set; }
 
-            [HelpOption(HelpText = "Display this help screen.")]
-            public string GetUsage()
-            {
-                return HelpText.AutoBuild(this,
-                  (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
-            }
+            //[HelpOption(HelpText = "Display this help screen.")]
+            //public string GetUsage()
+            //{
+            //    return HelpText.AutoBuild(this,
+            //      (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+            //}
         }
 
         static void FramebufferSizeCallback(Glfw.Window window, int width, int height)
@@ -51,14 +51,13 @@ namespace Glfw3.Tests
 
             int samples = 4;
             Glfw.Window window;
+            
 
-            var options = new Options();
-
-            if (Parser.Default.ParseArguments(args, options))
+            Parser.Default.ParseArguments<Options>(args).WithParsed(options =>
             {
                 if (options.Samples > -1)
                     samples = options.Samples;
-            }
+            });
 
             if (!Glfw.Init())
                 Environment.Exit(1);
@@ -102,7 +101,7 @@ namespace Glfw3.Tests
                 Log("Context reports MSAA is unavailable");
 
             Gl.MatrixMode(MatrixMode.Projection);
-            Gl.Ortho(0f, 1f, 0f, 0.5f, 0f, 1f);
+            Gl.Ortho(0f, (double) 1, 0f, (double)0.5, 0f, 1f);
             Gl.MatrixMode(MatrixMode.Modelview);
 
             while (!Glfw.WindowShouldClose(window))

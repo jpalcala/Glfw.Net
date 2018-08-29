@@ -46,12 +46,12 @@ namespace Glfw3.Tests
             [Option('b', HelpText = "Create decorated windows")]
             public bool Decorated { get; set; }
 
-            [HelpOption(HelpText = "Display this help screen.")]
-            public string GetUsage()
-            {
-                return HelpText.AutoBuild(this,
-                  (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
-            }
+            //[HelpOption(HelpText = "Display this help screen.")]
+            //public string GetUsage()
+            //{
+            //    return HelpText.AutoBuild(this,
+            //      (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+            //}
         }
 
         static void KeyCallback(Glfw.Window window, Glfw.KeyCode key, int scancode, Glfw.InputState state, Glfw.KeyMods mods)
@@ -81,10 +81,8 @@ namespace Glfw3.Tests
             bool running = true;
             Glfw.Window[] windows = new Glfw.Window[4];
 
-            var options = new Options();
-
-            if (Parser.Default.ParseArguments(args, options))
-                decorated = options.Decorated;
+            Parser.Default.ParseArguments<Options>(args).WithParsed(options =>
+                decorated = options.Decorated);
 
             if (!Glfw.Init())
                 Environment.Exit(1);
