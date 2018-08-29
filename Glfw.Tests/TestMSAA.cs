@@ -58,7 +58,7 @@ namespace Glfw3.Tests
                 if (options.Samples > -1)
                     samples = options.Samples;
             });
-
+            Gl.Initialize();
             if (!Glfw.Init())
                 Environment.Exit(1);
 

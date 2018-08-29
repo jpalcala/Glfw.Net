@@ -8,7 +8,7 @@ class TestExample
     {
         // If the library isn't in the environment path we need to set it
         Glfw.ConfigureNativesDirectory("External/");
-
+        Gl.Initialize();
         // Initialize the library
         if (!Glfw.Init())
             Environment.Exit(-1);
@@ -20,14 +20,16 @@ class TestExample
             Glfw.Terminate();
             Environment.Exit(-1);
         }
-
+        
         // Make the window's context current
         Glfw.MakeContextCurrent(window);
 
+        Gl.Viewport(0, 0, 800, 600);
         // Loop until the user closes the window
         while (!Glfw.WindowShouldClose(window))
         {
             // Render here
+            Gl.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             Gl.Clear(ClearBufferMask.ColorBufferBit);
 
             // Swap front and back buffers
