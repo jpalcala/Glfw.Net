@@ -17,17 +17,18 @@ namespace Glfw3.Tests
                 Glfw.SetWindowShouldClose(window, true);
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Init();
 
             var rand = new Random();
-            Glfw.Window window;
+            Gl.Initialize();
 
             if (!Glfw.Init())
                 Environment.Exit(1);
 
-            window = Glfw.CreateWindow(640, 480, "Event Wait Timeout Test");
+            var window = Glfw.CreateWindow(640, 480, "Event Wait Timeout Test");
+
             if (!window)
             {
                 Glfw.Terminate();
@@ -39,11 +40,10 @@ namespace Glfw3.Tests
 
             while (!Glfw.WindowShouldClose(window))
             {
-                int width, height;
                 double r = rand.NextDouble(), g = rand.NextDouble(), b = rand.NextDouble();
                 double l = Math.Sqrt(r * r + g * g + b * b);
 
-                Glfw.GetFramebufferSize(window, out width, out height);
+                Glfw.GetFramebufferSize(window, out int width, out int height);
 
                 Gl.Viewport(0, 0, width, height);
                 Gl.ClearColor((float)(r / l), (float)(g / l), (float)(b / l), 1f);
