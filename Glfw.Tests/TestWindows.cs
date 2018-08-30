@@ -1,7 +1,6 @@
 namespace Glfw3.Tests
 {
     using CommandLine;
-    using CommandLine.Text;
     using OpenGL;
     using System;
 
@@ -45,13 +44,6 @@ namespace Glfw3.Tests
         {
             [Option('b', HelpText = "Create decorated windows")]
             public bool Decorated { get; set; }
-
-            //[HelpOption(HelpText = "Display this help screen.")]
-            //public string GetUsage()
-            //{
-            //    return HelpText.AutoBuild(this,
-            //      (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
-            //}
         }
 
         static void KeyCallback(Glfw.Window window, Glfw.KeyCode key, int scancode, Glfw.InputState state, Glfw.KeyMods mods)
@@ -62,14 +54,19 @@ namespace Glfw3.Tests
             switch (key)
             {
                 case Glfw.KeyCode.Space:
-                    int xpos, ypos;
-                    Glfw.GetWindowPos(window, out xpos, out ypos);
-                    Glfw.SetWindowPos(window, xpos, ypos);
-                    break;
-
+                    {
+                        Glfw.GetWindowPos(window, out int xpos, out int ypos);
+                        Glfw.SetWindowPos(window, xpos, ypos);
+                        break;
+                    }
                 case Glfw.KeyCode.Escape:
-                    Glfw.SetWindowShouldClose(window, true);
-                    break;
+                    {
+                        Glfw.SetWindowShouldClose(window, true);
+                        break;
+                    }
+
+                default:
+                   break;
             }
         }
 
@@ -77,12 +74,14 @@ namespace Glfw3.Tests
         {
             Init();
 
-            bool decorated = false;
-            bool running = true;
-            Glfw.Window[] windows = new Glfw.Window[4];
+            var decorated = false;
+            var running = true;
+            var windows = new Glfw.Window[4];
 
             Parser.Default.ParseArguments<Options>(args).WithParsed(options =>
                 decorated = options.Decorated);
+
+            Gl.Initialize();
 
             if (!Glfw.Init())
                 Environment.Exit(1);
@@ -92,8 +91,6 @@ namespace Glfw3.Tests
 
             for (int i = 0; i < 4; i++)
             {
-                int left, top, right, bottom;
-
                 windows[i] = Glfw.CreateWindow(200, 200, m_Titles[i]);
                 if (!windows[i])
                 {
@@ -106,7 +103,7 @@ namespace Glfw3.Tests
                 Glfw.MakeContextCurrent(windows[i]);
                 Gl.ClearColor(m_Colors[i].r, m_Colors[i].g, m_Colors[i].b, 1f);
 
-                Glfw.GetWindowFrameSize(windows[i], out left, out top, out right, out bottom);
+                Glfw.GetWindowFrameSize(windows[i], out int left, out int top, out int right, out int bottom);
                 Glfw.SetWindowPos(windows[i],
                                  100 + (i & 1) * (200 + left + right),
                                  100 + (i >> 1) * (200 + top + bottom));
