@@ -1,7 +1,6 @@
 namespace Glfw3.Tests
 {
     using CommandLine;
-    using CommandLine.Text;
     using OpenGL;
     using System;
 
@@ -16,15 +15,8 @@ namespace Glfw3.Tests
     {
         class Options
         {
-            [Option('s', HelpText = "Number of samples for MSAA")]
+            [Option('s', HelpText = "Number of samples for MSAA", Default = 10)]
             public int Samples { get; set; }
-
-            //[HelpOption(HelpText = "Display this help screen.")]
-            //public string GetUsage()
-            //{
-            //    return HelpText.AutoBuild(this,
-            //      (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
-            //}
         }
 
         static void FramebufferSizeCallback(Glfw.Window window, int width, int height)
@@ -40,7 +32,12 @@ namespace Glfw3.Tests
             switch (key)
             {
                 case Glfw.KeyCode.Space:
-                    Glfw.SetTime(0.0);
+                    {
+                        Glfw.SetTime(0.0);
+                        break;
+                    }
+
+                default:
                     break;
             }
         }
@@ -49,15 +46,15 @@ namespace Glfw3.Tests
         {
             Init();
 
-            int samples = 4;
+            var samples = 4;
             Glfw.Window window;
-            
 
             Parser.Default.ParseArguments<Options>(args).WithParsed(options =>
             {
                 if (options.Samples > -1)
                     samples = options.Samples;
             });
+
             Gl.Initialize();
             if (!Glfw.Init())
                 Environment.Exit(1);
@@ -92,8 +89,7 @@ namespace Glfw3.Tests
 
             Glfw.ShowWindow(window);
 
-            int s;
-            Gl.Get(GetPName.Samples, out s);
+            Gl.Get(GetPName.Samples, out int s);
 
             if (s > 1)
                 Log("Context reports MSAA is available with {0} samples", samples);
@@ -101,12 +97,12 @@ namespace Glfw3.Tests
                 Log("Context reports MSAA is unavailable");
 
             Gl.MatrixMode(MatrixMode.Projection);
-            Gl.Ortho(0f, (double) 1, 0f, (double)0.5, 0f, 1f);
+            Gl.Ortho(0.0, 1.0, 0.0, 0.5, 0.0, 1.0);
             Gl.MatrixMode(MatrixMode.Modelview);
 
             while (!Glfw.WindowShouldClose(window))
             {
-                float time = (float)Glfw.GetTime();
+                var time = (float)Glfw.GetTime();
 
                 Gl.Clear(ClearBufferMask.ColorBufferBit);
 
