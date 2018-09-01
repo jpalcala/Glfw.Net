@@ -1,7 +1,6 @@
 namespace Glfw3.Tests
 {
     using CommandLine;
-    using CommandLine.Text;
     using OpenGL;
     using System;
 
@@ -23,13 +22,6 @@ namespace Glfw3.Tests
         {
             [Option('t', HelpText = "Test mode")]
             public bool Mode { get; set; }
-
-            //[HelpOption(HelpText = "Display this help screen.")]
-            //public string GetUsage()
-            //{
-            //    return HelpText.AutoBuild(this,
-            //      (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
-            //}
         }
 
         static string FormatMode(Glfw.VideoMode mode)

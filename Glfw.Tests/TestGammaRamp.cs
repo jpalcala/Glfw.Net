@@ -1,7 +1,6 @@
 namespace Glfw3.Tests
 {
     using CommandLine;
-    using CommandLine.Text;
     using OpenGL;
     using System;
 
@@ -18,13 +17,6 @@ namespace Glfw3.Tests
         {
             [Option('f', HelpText = "Create full screen window")]
             public bool Fullscreen { get; set; }
-
-            //[HelpOption(HelpText = "Display this help screen.")]
-            //public string GetUsage()
-            //{
-            //    return HelpText.AutoBuild(this,
-            //      (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
-            //}
         }
 
         static void SetGamma(Glfw.Window window, float gamma)
@@ -83,28 +75,31 @@ namespace Glfw3.Tests
             switch (key)
             {
                 case Glfw.KeyCode.Escape:
-                {
-                    Glfw.SetWindowShouldClose(window, true);
-                    break;
-                }
+                    {
+                        Glfw.SetWindowShouldClose(window, true);
+                        break;
+                    }
 
                 case Glfw.KeyCode.NumpadAdd:
                 case Glfw.KeyCode.Up:
                 case Glfw.KeyCode.Q:
-                {
-                    SetGamma(window, m_GammaValue + kStepSize);
-                    break;
-                }
+                    {
+                        SetGamma(window, m_GammaValue + kStepSize);
+                        break;
+                    }
 
                 case Glfw.KeyCode.NumpadSubtract:
                 case Glfw.KeyCode.Down:
                 case Glfw.KeyCode.W:
-                {
-                    if (m_GammaValue - kStepSize > 0f)
-                        SetGamma(window, m_GammaValue - kStepSize);
+                    {
+                        if (m_GammaValue - kStepSize > 0f)
+                            SetGamma(window, m_GammaValue - kStepSize);
 
+                        break;
+                    }
+
+                default:
                     break;
-                }
             }
         }
 
@@ -118,14 +113,14 @@ namespace Glfw3.Tests
             Init();
 
             int width, height;
-            Glfw.Window window;
-            Glfw.Monitor monitor = Glfw.Monitor.None;
+            var monitor = Glfw.Monitor.None;
 
             Parser.Default.ParseArguments<Options>(args).WithParsed(options =>
             {
                 if (options.Fullscreen)
                     monitor = Glfw.GetPrimaryMonitor();
             });
+            Gl.Initialize();
 
             if (!Glfw.Init())
                 Environment.Exit(1);
@@ -148,7 +143,7 @@ namespace Glfw3.Tests
                 height = 200;
             }
 
-            window = Glfw.CreateWindow(width, height, "Gamma Test", monitor, Glfw.Window.None);
+            var window = Glfw.CreateWindow(width, height, "Gamma Test", monitor, Glfw.Window.None);
             if (!window)
             {
                 Glfw.Terminate();
@@ -164,7 +159,7 @@ namespace Glfw3.Tests
             Glfw.SetFramebufferSizeCallback(window, FramebufferSizeCallback);
 
             Gl.MatrixMode(MatrixMode.Projection);
-            Gl.Ortho(-1f, 1f, -1f, 1f, -1f, 1f);
+            Gl.Ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
             Gl.MatrixMode(MatrixMode.Modelview);
 
             Gl.ClearColor(0.5f, 0.5f, 0.5f, 0);

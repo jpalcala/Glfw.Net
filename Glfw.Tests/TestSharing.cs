@@ -58,7 +58,7 @@ namespace Glfw3.Tests
                     pixels[y * 256 + x] = (byte)(rand.Next() % 256);
             }
 
-            //Gl.TexImage2D(TextureTarget.Texture2d, 0, Gl.LUMINANCE, 256, 256, 0, PixelFormat.Luminance, PixelType.UnsignedByte, pixels);
+            Gl.TexImage2D(TextureTarget.Texture2d, 0,InternalFormat.Luminance12, 256, 256, 0, PixelFormat.Luminance, PixelType.UnsignedByte, pixels);
             Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, Gl.LINEAR);
             Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, Gl.LINEAR);
 

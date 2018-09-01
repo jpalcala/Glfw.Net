@@ -32,7 +32,12 @@ namespace Glfw3.Tests
             {
                 case Glfw.KeyCode.Q:
                 case Glfw.KeyCode.Escape:
-                    Glfw.SetWindowShouldClose(window, true);
+                    {
+                        Glfw.SetWindowShouldClose(window, true);
+                        break;
+                    }
+
+                default:
                     break;
             }
         }
@@ -72,16 +77,16 @@ namespace Glfw3.Tests
 
         static void CloseWindow(Glfw.Window window)
         {
-            double b = Glfw.GetTime();
+            var b = Glfw.GetTime();
             Glfw.DestroyWindow(window);
             Log("Closing window took {0} seconds", Glfw.GetTime() - b);
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Init();
-
-            int count = 0;
+            Gl.Initialize();
+            var count = 0;
             Glfw.Window window;
             var rand = new Random();
 
@@ -119,7 +124,7 @@ namespace Glfw3.Tests
                 }
 
                 Gl.MatrixMode(MatrixMode.Projection);
-                Gl.Ortho(-1f, 1f, -1f, 1f, 1f, -1f);
+                Gl.Ortho(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0);
                 Gl.MatrixMode(MatrixMode.Modelview);
 
                 Glfw.SetTime(0.0);

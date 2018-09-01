@@ -47,7 +47,6 @@ namespace Glfw3.Tests
             Init();
 
             var samples = 4;
-            Glfw.Window window;
 
             Parser.Default.ParseArguments<Options>(args).WithParsed(options =>
             {
@@ -67,7 +66,7 @@ namespace Glfw3.Tests
             Glfw.WindowHint(Glfw.Hint.Samples, samples);
             Glfw.WindowHint(Glfw.Hint.Visible, false);
 
-            window = Glfw.CreateWindow(800, 400, "Aliasing Detector");
+            var window = Glfw.CreateWindow(800, 400, "Aliasing Detector");
             if (!window)
             {
                 Glfw.Terminate();

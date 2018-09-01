@@ -41,7 +41,7 @@ namespace Glfw3.Tests
             new byte[] { 255, 255, 255, 255 }  // white
         };
 
-        static int m_CurIconColor = 0;
+        static int m_CurIconColor;
 
         static void SetIcon(Glfw.Window window, int iconColor)
         {
@@ -88,28 +88,36 @@ namespace Glfw3.Tests
             switch (key)
             {
                 case Glfw.KeyCode.Escape:
-                    Glfw.SetWindowShouldClose(window, true);
-                    break;
+                    {
+                        Glfw.SetWindowShouldClose(window, true);
+                        break;
+                    }
                 case Glfw.KeyCode.Space:
-                    m_CurIconColor = (m_CurIconColor + 1) % 5;
-                    SetIcon(window, m_CurIconColor);
-                    break;
+                    {
+                        m_CurIconColor = (m_CurIconColor + 1) % 5;
+                        SetIcon(window, m_CurIconColor);
+                        break;
+                    }
                 case Glfw.KeyCode.X:
-                    Glfw.SetWindowIcon(window, null);
+                    {
+                        Glfw.SetWindowIcon(window, null);
+                        break;
+                    }
+
+                default:
                     break;
             }
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Init();
-
-            Glfw.Window window;
+            Gl.Initialize();
 
             if (!Glfw.Init())
                 Environment.Exit(1);
 
-            window = Glfw.CreateWindow(200, 200, "Window Icon");
+            var window = Glfw.CreateWindow(200, 200, "Window Icon");
             if (!window)
             {
                 Glfw.Terminate();

@@ -180,11 +180,20 @@ namespace Glfw3.Tests
             switch (action)
             {
                 case Glfw.InputState.Press:
-                    return "pressed";
+                    {
+                        return "pressed";
+                    }
                 case Glfw.InputState.Release:
-                    return "released";
+                    {
+                        return "released";
+                    }
                 case Glfw.InputState.Repeat:
-                    return "repeated";
+                    {
+                        return "repeated";
+                    }
+
+                default:
+                    break;
             }
 
             return "caused unknown action";
@@ -207,7 +216,7 @@ namespace Glfw3.Tests
 
         static string GetModsName(Glfw.KeyMods mods)
         {
-            string name = "";
+            var name = "";
 
             if ((mods & Glfw.KeyMods.Shift) > 0)
                 name += " shift";
@@ -346,12 +355,15 @@ namespace Glfw3.Tests
             switch (key)
             {
                 case Glfw.KeyCode.C:
-                {
-                    slot.Closeable = !slot.Closeable;
+                    {
+                        slot.Closeable = !slot.Closeable;
 
-                    Log("(( closing {0} ))", slot.Closeable ? "enabled" : "disabled");
+                        Log("(( closing {0} ))", slot.Closeable ? "enabled" : "disabled");
+                        break;
+                    }
+
+                default:
                     break;
-                }
             }
         }
 
@@ -434,9 +446,11 @@ namespace Glfw3.Tests
         static void Main(string[] args)
         {
             Init();
-            
+
             var monitor = Glfw.Monitor.None;
             int width, height, count = 1;
+
+            Gl.Initialize();
 
             if (!Glfw.Init())
                 Environment.Exit(1);
@@ -482,12 +496,13 @@ namespace Glfw3.Tests
 
             for (int i = 0; i < count; i++)
             {
-                var slot = new Slot();
+                var slot = new Slot
+                {
+                    Closeable = true,
+                    Number = i + 1
+                };
 
-                slot.Closeable = true;
-                slot.Number = i + 1;
-
-                string title = string.Format("Event Linter (Window {0})", slot.Number);
+                var title = $"Event Linter (Window {slot.Number})";
 
                 if (monitor)
                 {
@@ -537,7 +552,7 @@ namespace Glfw3.Tests
 
             for (;;)
             {
-                int i = 0;
+                var i = 0;
                 foreach (var slot in m_Slots.Values)
                 {
                     i++;
@@ -551,7 +566,7 @@ namespace Glfw3.Tests
 
                 Glfw.WaitEvents();
             }
-            
+
             Glfw.Terminate();
         }
     }
