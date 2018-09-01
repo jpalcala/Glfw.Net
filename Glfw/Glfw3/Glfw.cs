@@ -55,7 +55,7 @@ namespace Glfw3
         internal static IntPtr ToUTF8(string text)
         {
             int len = Encoding.UTF8.GetByteCount(text);
-            byte[] buffer = new byte[len + 1];
+            var buffer = new byte[len + 1];
             Encoding.UTF8.GetBytes(text, 0, text.Length, buffer, 0);
             var nativeUtf8 = Marshal.AllocHGlobal(buffer.Length);
             Marshal.Copy(buffer, 0, nativeUtf8, buffer.Length);
@@ -67,7 +67,7 @@ namespace Glfw3
             int len = 0;
             while (Marshal.ReadByte(ptr, len) != 0)
                 ++len;
-            byte[] buffer = new byte[len];
+            var buffer = new byte[len];
             Marshal.Copy(ptr, buffer, 0, buffer.Length);
             return Encoding.UTF8.GetString(buffer);
         }

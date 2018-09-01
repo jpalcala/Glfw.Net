@@ -19,27 +19,34 @@ namespace Glfw3.Tests
             switch (key)
             {
                 case Glfw.KeyCode.Escape:
-                    Glfw.SetWindowShouldClose(window, true);
-                    break;
-
+                    {
+                        Glfw.SetWindowShouldClose(window, true);
+                        break;
+                    }
                 case Glfw.KeyCode.V:
-                    if (mods == Glfw.KeyMods.Control)
                     {
-                        string str = Glfw.GetClipboardString(window);
-                        if (!string.IsNullOrEmpty(str))
-                            Log("Clipboard contains \"{0}\"", str);
-                        else
-                            Log("Clipboard does not contain a string");
+                        if (mods == Glfw.KeyMods.Control)
+                        {
+                            string str = Glfw.GetClipboardString(window);
+                            if (!string.IsNullOrEmpty(str))
+                                Log("Clipboard contains \"{0}\"", str);
+                            else
+                                Log("Clipboard does not contain a string");
+                        }
+                        break;
                     }
-                    break;
-
                 case Glfw.KeyCode.C:
-                    if (mods == Glfw.KeyMods.Control)
                     {
-                        const string str = "Hello GLFW World!";
-                        Glfw.SetClipboardString(window, str);
-                        Log("Setting clipboard to \"{0}\"", str);
+                        if (mods == Glfw.KeyMods.Control)
+                        {
+                            const string str = "Hello GLFW World!";
+                            Glfw.SetClipboardString(window, str);
+                            Log("Setting clipboard to \"{0}\"", str);
+                        }
+                        break;
                     }
+
+                default:
                     break;
             }
         }
@@ -49,16 +56,16 @@ namespace Glfw3.Tests
             Gl.Viewport(0, 0, width, height);
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Init();
 
-            Glfw.Window window;
+            Gl.Initialize();
 
             if (!Glfw.Init())
                 Environment.Exit(1);
 
-            window = Glfw.CreateWindow(200, 200, "Clipboard Test");
+            var window = Glfw.CreateWindow(200, 200, "Clipboard Test");
             if (!window)
             {
                 Glfw.Terminate();
@@ -72,7 +79,7 @@ namespace Glfw3.Tests
             Glfw.SetFramebufferSizeCallback(window, FramebufferSizeCallback);
 
             Gl.MatrixMode(MatrixMode.Projection);
-            Gl.Ortho(-1f, 1f, -1f, 1f, 1f, -1f);
+            Gl.Ortho(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0);
             Gl.MatrixMode(MatrixMode.Modelview);
 
             Gl.ClearColor(0.5f, 0.5f, 0.5f, 0);

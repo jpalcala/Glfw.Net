@@ -1,7 +1,6 @@
 namespace Glfw3.Tests
 {
     using CommandLine;
-    using CommandLine.Text;
     using OpenGL;
     using System;
 
@@ -22,21 +21,11 @@ namespace Glfw3.Tests
         {
             [Option('f', HelpText = "create full screen window")]
             public bool Fullscreen { get; set; }
-
-            [HelpOption(HelpText = "Display this help screen.")]
-            public string GetUsage()
-            {
-                return HelpText.AutoBuild(this,
-                  (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
-            }
         }
 
         static void UpdateWindowTitle(Glfw.Window window)
         {
-            string title = string.Format("Tearing detector (interval {0}{1}, {2} Hz)",
-                swapInterval,
-                (swapTear && swapInterval < 0) ? " (swap tear)" : "",
-                frameRate);
+            var title = $"Tearing detector (interval {swapInterval}{((swapTear && swapInterval < 0) ? " (swap tear)" : "")}, {frameRate} Hz)";
 
             Glfw.SetWindowTitle(window, title);
         }
@@ -61,29 +50,34 @@ namespace Glfw3.Tests
             switch (key)
             {
                 case Glfw.KeyCode.Up:
-                {
-                    if (swapInterval + 1 > swapInterval)
-                        SetSwapInterval(window, swapInterval + 1);
-                    break;
-                }
+                    {
+                        if (swapInterval + 1 > swapInterval)
+                            SetSwapInterval(window, swapInterval + 1);
+                        break;
+                    }
 
                 case Glfw.KeyCode.Down:
-                {
-                    if (swapTear)
                     {
-                        if (swapInterval - 1 < swapInterval)
-                            SetSwapInterval(window, swapInterval - 1);
+                        if (swapTear)
+                        {
+                            if (swapInterval - 1 < swapInterval)
+                                SetSwapInterval(window, swapInterval - 1);
+                        }
+                        else
+                        {
+                            if (swapInterval - 1 >= 0)
+                                SetSwapInterval(window, swapInterval - 1);
+                        }
+                        break;
                     }
-                    else
-                    {
-                        if (swapInterval - 1 >= 0)
-                            SetSwapInterval(window, swapInterval - 1);
-                    }
-                    break;
-                }
 
                 case Glfw.KeyCode.Escape:
-                    Glfw.SetWindowShouldClose(window, true);
+                    {
+                        Glfw.SetWindowShouldClose(window, true);
+                        break;
+                    }
+
+                default:
                     break;
             }
         }
@@ -91,8 +85,7 @@ namespace Glfw3.Tests
         static void Main(string[] args)
         {
             Init();
-
-            var options = new Options();
+            Gl.Initialize();
 
             int width, height;
             float position;
@@ -100,10 +93,9 @@ namespace Glfw3.Tests
             double lastTime, currentTime;
             bool fullscreen = false;
             var monitor = Glfw.Monitor.None;
-            Glfw.Window window;
-            
-            if (Parser.Default.ParseArguments(args, options))
-                fullscreen = options.Fullscreen;
+
+            Parser.Default.ParseArguments<Options>(args).WithParsed(options =>
+                fullscreen = options.Fullscreen);
 
             if (!Glfw.Init())
                 Environment.Exit(1);
@@ -127,7 +119,7 @@ namespace Glfw3.Tests
                 height = 480;
             }
 
-            window = Glfw.CreateWindow(width, height, "", monitor, Glfw.Window.None);
+            var window = Glfw.CreateWindow(width, height, "", monitor, Glfw.Window.None);
             if (!window)
             {
                 Glfw.Terminate();
@@ -144,16 +136,16 @@ namespace Glfw3.Tests
 
             Glfw.SetFramebufferSizeCallback(window, FramebufferSizeCallback);
             Glfw.SetKeyCallback(window, KeyCallback);
-            
+
             Gl.MatrixMode(MatrixMode.Projection);
-            Gl.Ortho(-1f, 1f, -1f, 1f, 1f, -1f);
+            Gl.Ortho(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0);
             Gl.MatrixMode(MatrixMode.Modelview);
 
             while (!Glfw.WindowShouldClose(window))
             {
                 Gl.Clear(ClearBufferMask.ColorBufferBit);
 
-                position = (float)System.Math.Cos(Glfw.GetTime() * 4f) * 0.75f;
+                position = (float) Math.Cos(Glfw.GetTime() * 4f) * 0.75f;
                 Gl.Rect(position - 0.25f, -1f, position + 0.25f, 1f);
 
                 Glfw.SwapBuffers(window);

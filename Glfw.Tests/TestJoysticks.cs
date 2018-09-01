@@ -67,12 +67,11 @@ namespace Glfw3.Tests
 
         static void DrawJoysticks(Glfw.Window window)
         {
-            int width, height;
-            Glfw.GetFramebufferSize(window, out width, out height);
+            Glfw.GetFramebufferSize(window, out int width, out int height);
 
             Gl.MatrixMode(MatrixMode.Projection);
             Gl.LoadIdentity();
-            Gl.Ortho(0f, width, height, 0f, 1f, -1f);
+            Gl.Ortho(0.0, width, height, 0.0, 1.0, -1.0);
             Gl.MatrixMode(MatrixMode.Modelview);
 
             for (int i = 0; i < m_Joysticks.Count; i++)
@@ -116,11 +115,10 @@ namespace Glfw3.Tests
             }
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Init();
-
-            Glfw.Window window;
+            Gl.Initialize();
 
             if (!Glfw.Init())
                 Environment.Exit(1);
@@ -128,7 +126,7 @@ namespace Glfw3.Tests
             FindJoysticks();
             Glfw.SetJoystickCallback(JoystickCallback);
 
-            window = Glfw.CreateWindow(640, 480, "Joystick Test");
+            var window = Glfw.CreateWindow(640, 480, "Joystick Test");
             if (!window)
             {
                 Glfw.Terminate();

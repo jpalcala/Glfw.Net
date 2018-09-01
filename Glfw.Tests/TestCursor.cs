@@ -13,13 +13,13 @@ namespace Glfw3.Tests
     class TestCursor : TestBase
     {
         const int CURSOR_FRAME_COUNT = 60;
-        
+
         static double cursorX;
         static double cursorY;
         static int swapInterval = 1;
         static bool waitEvents = true;
-        static bool animateCursor = false;
-        static bool trackCursor = false;
+        static bool animateCursor;
+        static bool trackCursor;
         static Glfw.Cursor[] standardCursors;
 
         static float Star(int x, int y, float t)
@@ -82,87 +82,106 @@ namespace Glfw3.Tests
             switch (key)
             {
                 case Glfw.KeyCode.A:
-                {
-                    animateCursor = !animateCursor;
-                    if (!animateCursor)
-                        Glfw.SetCursor(window, Glfw.Cursor.None);
+                    {
+                        animateCursor = !animateCursor;
+                        if (!animateCursor)
+                            Glfw.SetCursor(window, Glfw.Cursor.None);
 
-                    break;
-                }
+                        break;
+                    }
 
                 case Glfw.KeyCode.Escape:
-                {
-                    Glfw.SetWindowShouldClose(window, true);
-                    break;
-                }
+                    {
+                        Glfw.SetWindowShouldClose(window, true);
+                        break;
+                    }
 
                 case Glfw.KeyCode.N:
-                    Glfw.SetInputMode(window, Glfw.InputMode.Cursor, Glfw.CursorMode.Normal);
-                    Log("(( cursor is normal ))");
-                    break;
-
+                    {
+                        Glfw.SetInputMode(window, Glfw.InputMode.Cursor, Glfw.CursorMode.Normal);
+                        Log("(( cursor is normal ))");
+                        break;
+                    }
                 case Glfw.KeyCode.D:
-                    Glfw.SetInputMode(window, Glfw.InputMode.Cursor, Glfw.CursorMode.Disabled);
-                    Log("(( cursor is disabled ))");
-                    break;
-
+                    {
+                        Glfw.SetInputMode(window, Glfw.InputMode.Cursor, Glfw.CursorMode.Disabled);
+                        Log("(( cursor is disabled ))");
+                        break;
+                    }
                 case Glfw.KeyCode.H:
-                    Glfw.SetInputMode(window, Glfw.InputMode.Cursor, Glfw.CursorMode.Hidden);
-                    Log("(( cursor is hidden ))");
-                    break;
-
+                    {
+                        Glfw.SetInputMode(window, Glfw.InputMode.Cursor, Glfw.CursorMode.Hidden);
+                        Log("(( cursor is hidden ))");
+                        break;
+                    }
                 case Glfw.KeyCode.Space:
-                    swapInterval = 1 - swapInterval;
-                    Log("(( swap interval: {0} ))", swapInterval);
-                    Glfw.SwapInterval(swapInterval);
-                    break;
-
+                    {
+                        swapInterval = 1 - swapInterval;
+                        Log("(( swap interval: {0} ))", swapInterval);
+                        Glfw.SwapInterval(swapInterval);
+                        break;
+                    }
                 case Glfw.KeyCode.W:
-                    waitEvents = !waitEvents;
-                    Log("(( {0}ing for events ))", waitEvents ? "wait" : "poll");
-                    break;
-
+                    {
+                        waitEvents = !waitEvents;
+                        Log("(( {0}ing for events ))", waitEvents ? "wait" : "poll");
+                        break;
+                    }
                 case Glfw.KeyCode.T:
-                    trackCursor = !trackCursor;
-                    break;
-
+                    {
+                        trackCursor = !trackCursor;
+                        break;
+                    }
                 case Glfw.KeyCode.Alpha0:
-                    Glfw.SetCursor(window, Glfw.Cursor.None);
-                    break;
-
+                    {
+                        Glfw.SetCursor(window, Glfw.Cursor.None);
+                        break;
+                    }
                 case Glfw.KeyCode.Alpha1:
-                    Glfw.SetCursor(window, standardCursors[0]);
-                    break;
-
+                    {
+                        Glfw.SetCursor(window, standardCursors[0]);
+                        break;
+                    }
                 case Glfw.KeyCode.Alpha2:
-                    Glfw.SetCursor(window, standardCursors[1]);
-                    break;
-
+                    {
+                        Glfw.SetCursor(window, standardCursors[1]);
+                        break;
+                    }
                 case Glfw.KeyCode.Alpha3:
-                    Glfw.SetCursor(window, standardCursors[2]);
-                    break;
-
+                    {
+                        Glfw.SetCursor(window, standardCursors[2]);
+                        break;
+                    }
                 case Glfw.KeyCode.Alpha4:
-                    Glfw.SetCursor(window, standardCursors[3]);
-                    break;
-
+                    {
+                        Glfw.SetCursor(window, standardCursors[3]);
+                        break;
+                    }
                 case Glfw.KeyCode.Alpha5:
-                    Glfw.SetCursor(window, standardCursors[4]);
-                    break;
-
+                    {
+                        Glfw.SetCursor(window, standardCursors[4]);
+                        break;
+                    }
                 case Glfw.KeyCode.Alpha6:
-                    Glfw.SetCursor(window, standardCursors[5]);
+                    {
+                        Glfw.SetCursor(window, standardCursors[5]);
+                        break;
+                    }
+
+                default:
                     break;
             }
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Init();
 
             Glfw.Window window;
             var starCursors = new Glfw.Cursor[CURSOR_FRAME_COUNT];
-            Glfw.Cursor currentFrame = Glfw.Cursor.None;
+            var currentFrame = Glfw.Cursor.None;
+
+            Gl.Initialize();
 
             if (!Glfw.Init())
                 Environment.Exit(1);
@@ -248,7 +267,7 @@ namespace Glfw3.Tests
 
                 if (animateCursor)
                 {
-                    int i = (int)(Glfw.GetTime() * 30.0) % CURSOR_FRAME_COUNT;
+                    var i = (int)(Glfw.GetTime() * 30.0) % CURSOR_FRAME_COUNT;
 
                     if (currentFrame != starCursors[i])
                     {

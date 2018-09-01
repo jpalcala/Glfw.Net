@@ -18,13 +18,6 @@ namespace Glfw3.Tests
         {
             [Option('f', HelpText = "Create full screen window")]
             public bool Fullscreen { get; set; }
-
-            [HelpOption(HelpText = "Display this help screen.")]
-            public string GetUsage()
-            {
-                return HelpText.AutoBuild(this,
-                  (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
-            }
         }
 
         static void SetGamma(Glfw.Window window, float value)
@@ -82,18 +75,17 @@ namespace Glfw3.Tests
 
             int width, height;
             Glfw.Window window;
-            Glfw.Monitor monitor = Glfw.Monitor.None;
-
-            var options = new Options();
-
-            if (Parser.Default.ParseArguments(args, options))
-            {
-                if (options.Fullscreen)
-                    monitor = Glfw.GetPrimaryMonitor();
-            }
+            var monitor = Glfw.Monitor.None;
+            Gl.Initialize();
 
             if (!Glfw.Init())
                 Environment.Exit(1);
+
+            Parser.Default.ParseArguments<Options>(args).WithParsed(options =>
+                {
+                    if (options.Fullscreen)
+                        monitor = Glfw.GetPrimaryMonitor();
+                });
 
             if (monitor)
             {
@@ -129,7 +121,7 @@ namespace Glfw3.Tests
             Glfw.SetFramebufferSizeCallback(window, FramebufferSizeCallback);
 
             Gl.MatrixMode(MatrixMode.Projection);
-            Gl.Ortho(-1f, 1f, -1f, 1f, -1f, 1f);
+            Gl.Ortho(-1f, (double) 1, -1f, (double) 1, -1f, 1f);
             Gl.MatrixMode(MatrixMode.Modelview);
 
             Gl.ClearColor(0.5f, 0.5f, 0.5f, 0);

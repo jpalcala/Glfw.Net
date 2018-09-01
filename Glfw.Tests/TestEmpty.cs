@@ -29,11 +29,12 @@ namespace Glfw3.Tests
                 Glfw.SetWindowShouldClose(window, true);
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Init();
 
             var rand = new Random();
+            Gl.Initialize();
 
             if (!Glfw.Init())
                 Environment.Exit(1);

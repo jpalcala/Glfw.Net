@@ -16,15 +16,17 @@ namespace Glfw3.Tests
             Gl.Viewport(0, 0, width, height);
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Init();
 
             Glfw.Window window;
 
+            Gl.Initialize();
+
             if (!Glfw.Init())
                 Environment.Exit(1);
-            
+
             window = Glfw.CreateWindow(400, 400, "English 日本語 русский язык 官話");
 
             if (!window)

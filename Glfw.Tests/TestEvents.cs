@@ -32,15 +32,15 @@ namespace Glfw3.Tests
             [Option('f', HelpText = "Use full screen")]
             public bool Fullscreen { get; set; }
 
-            [Option('n', HelpText = "The number of windows to create", DefaultValue = 1)]
+            [Option('n', HelpText = "The number of windows to create", Default = 1)]
             public int WindowCount { get; set; }
 
-            [HelpOption(HelpText = "Display this help screen.")]
-            public string GetUsage()
-            {
-                return HelpText.AutoBuild(this,
-                  (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
-            }
+            //[HelpOption(HelpText = "Display this help screen.")]
+            //public string GetUsage()
+            //{
+            //    return HelpText.AutoBuild(this,
+            //      (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+            //}
         }
 
         static string GetKeyName(Glfw.KeyCode key)
@@ -180,11 +180,20 @@ namespace Glfw3.Tests
             switch (action)
             {
                 case Glfw.InputState.Press:
-                    return "pressed";
+                    {
+                        return "pressed";
+                    }
                 case Glfw.InputState.Release:
-                    return "released";
+                    {
+                        return "released";
+                    }
                 case Glfw.InputState.Repeat:
-                    return "repeated";
+                    {
+                        return "repeated";
+                    }
+
+                default:
+                    break;
             }
 
             return "caused unknown action";
@@ -207,7 +216,7 @@ namespace Glfw3.Tests
 
         static string GetModsName(Glfw.KeyMods mods)
         {
-            string name = "";
+            var name = "";
 
             if ((mods & Glfw.KeyMods.Shift) > 0)
                 name += " shift";
@@ -346,12 +355,15 @@ namespace Glfw3.Tests
             switch (key)
             {
                 case Glfw.KeyCode.C:
-                {
-                    slot.Closeable = !slot.Closeable;
+                    {
+                        slot.Closeable = !slot.Closeable;
 
-                    Log("(( closing {0} ))", slot.Closeable ? "enabled" : "disabled");
+                        Log("(( closing {0} ))", slot.Closeable ? "enabled" : "disabled");
+                        break;
+                    }
+
+                default:
                     break;
-                }
             }
         }
 
@@ -434,9 +446,11 @@ namespace Glfw3.Tests
         static void Main(string[] args)
         {
             Init();
-            
+
             var monitor = Glfw.Monitor.None;
             int width, height, count = 1;
+
+            Gl.Initialize();
 
             if (!Glfw.Init())
                 Environment.Exit(1);
@@ -446,15 +460,13 @@ namespace Glfw3.Tests
             Glfw.SetMonitorCallback(MonitorCallback);
             Glfw.SetJoystickCallback(JoystickCallback);
 
-            var options = new Options();
-            
-            if (Parser.Default.ParseArguments(args, options))
+             Parser.Default.ParseArguments<Options>(args).WithParsed(options =>
             {
                 if (options.Fullscreen)
                     Glfw.GetPrimaryMonitor();
                 else
                     count = options.WindowCount;
-            }
+            });
 
             if (monitor)
             {
@@ -484,12 +496,13 @@ namespace Glfw3.Tests
 
             for (int i = 0; i < count; i++)
             {
-                var slot = new Slot();
+                var slot = new Slot
+                {
+                    Closeable = true,
+                    Number = i + 1
+                };
 
-                slot.Closeable = true;
-                slot.Number = i + 1;
-
-                string title = string.Format("Event Linter (Window {0})", slot.Number);
+                var title = $"Event Linter (Window {slot.Number})";
 
                 if (monitor)
                 {
@@ -539,7 +552,7 @@ namespace Glfw3.Tests
 
             for (;;)
             {
-                int i = 0;
+                var i = 0;
                 foreach (var slot in m_Slots.Values)
                 {
                     i++;
@@ -553,7 +566,7 @@ namespace Glfw3.Tests
 
                 Glfw.WaitEvents();
             }
-            
+
             Glfw.Terminate();
         }
     }

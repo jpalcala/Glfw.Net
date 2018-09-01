@@ -1,7 +1,6 @@
 namespace Glfw3.Tests
 {
     using CommandLine;
-    using CommandLine.Text;
     using OpenGL;
     using System;
 
@@ -15,7 +14,7 @@ namespace Glfw3.Tests
     class TestIconify : TestBase
     {
         static int m_WindowedXPos, m_WindowedYPos, m_WindowedWidth, m_WindowedHeight;
-        
+
         class Options
         {
             [Option('a', HelpText = "Create windows for all monitors")]
@@ -26,13 +25,6 @@ namespace Glfw3.Tests
 
             [Option('n', HelpText = "No automatic iconification of full screen windows")]
             public bool AutoIconify { get; set; }
-
-            [HelpOption(HelpText = "Display this help screen.")]
-            public string GetUsage()
-            {
-                return HelpText.AutoBuild(this,
-                  (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
-            }
         }
 
         static void KeyCallback(Glfw.Window window, Glfw.KeyCode key, int scancode, Glfw.InputState state, Glfw.KeyMods mods)
@@ -47,46 +39,57 @@ namespace Glfw3.Tests
             switch (key)
             {
                 case Glfw.KeyCode.I:
-                    Glfw.IconifyWindow(window);
-                    break;
+                    {
+                        Glfw.IconifyWindow(window);
+                        break;
+                    }
                 case Glfw.KeyCode.M:
-                    Glfw.MaximizeWindow(window);
-                    break;
+                    {
+                        Glfw.MaximizeWindow(window);
+                        break;
+                    }
                 case Glfw.KeyCode.R:
-                    Glfw.RestoreWindow(window);
-                    break;
+                    {
+                        Glfw.RestoreWindow(window);
+                        break;
+                    }
                 case Glfw.KeyCode.Escape:
-                    Glfw.SetWindowShouldClose(window, true);
-                    break;
+                    {
+                        Glfw.SetWindowShouldClose(window, true);
+                        break;
+                    }
                 case Glfw.KeyCode.F11:
                 case Glfw.KeyCode.Enter:
-                {
-                    if (mods != Glfw.KeyMods.Alt)
-                        return;
+                    {
+                        if (mods != Glfw.KeyMods.Alt)
+                            return;
 
-                    if (Glfw.GetWindowMonitor(window))
-                    {
-                        Glfw.SetWindowMonitor(window, Glfw.Monitor.None,
-                                                m_WindowedXPos, m_WindowedYPos,
-                                                m_WindowedWidth, m_WindowedHeight,
-                                                0);
-                    }
-                    else
-                    {
-                        var monitor = Glfw.GetPrimaryMonitor();
-                        if (monitor)
+                        if (Glfw.GetWindowMonitor(window))
                         {
-                            var mode = Glfw.GetVideoMode(monitor);
-                            Glfw.GetWindowPos(window, out m_WindowedXPos, out m_WindowedYPos);
-                            Glfw.GetWindowSize(window, out m_WindowedWidth, out m_WindowedHeight);
-                            Glfw.SetWindowMonitor(window, monitor,
-                                                    0, 0, mode.Width, mode.Height,
-                                                    mode.RefreshRate);
+                            Glfw.SetWindowMonitor(window, Glfw.Monitor.None,
+                                                    m_WindowedXPos, m_WindowedYPos,
+                                                    m_WindowedWidth, m_WindowedHeight,
+                                                    0);
                         }
+                        else
+                        {
+                            var monitor = Glfw.GetPrimaryMonitor();
+                            if (monitor)
+                            {
+                                var mode = Glfw.GetVideoMode(monitor);
+                                Glfw.GetWindowPos(window, out m_WindowedXPos, out m_WindowedYPos);
+                                Glfw.GetWindowSize(window, out m_WindowedWidth, out m_WindowedHeight);
+                                Glfw.SetWindowMonitor(window, monitor,
+                                                        0, 0, mode.Width, mode.Height,
+                                                        mode.RefreshRate);
+                            }
+                        }
+
+                        break;
                     }
 
+                default:
                     break;
-                }
             }
         }
 
@@ -118,11 +121,10 @@ namespace Glfw3.Tests
 
         static void WindowRefreshCallback(Glfw.Window window)
         {
-            int width, height;
 
             Log("{0} Window refresh\n", Glfw.GetTime());
 
-            Glfw.GetFramebufferSize(window, out width, out height);
+            Glfw.GetFramebufferSize(window, out int width, out int height);
 
             Glfw.MakeContextCurrent(window);
 
@@ -166,7 +168,7 @@ namespace Glfw3.Tests
             if (!window)
             {
                 Glfw.Terminate();
-                System.Environment.Exit(1);
+                Environment.Exit(1);
             }
 
             Glfw.MakeContextCurrent(window);
@@ -177,18 +179,17 @@ namespace Glfw3.Tests
         static void Main(string[] args)
         {
             Init();
-            
+            Gl.Initialize();
+
             bool autoIconify = true, fullscreen = false, allMonitors = false;
             Glfw.Window[] windows;
 
-            var options = new Options();
-
-            if (Parser.Default.ParseArguments(args, options))
+            Parser.Default.ParseArguments<Options>(args).WithParsed(options =>
             {
                 autoIconify = options.AutoIconify;
                 fullscreen = options.Fullscreen;
                 allMonitors = options.AllMonitors;
-            }
+            });
 
             if (!Glfw.Init())
                 Environment.Exit(1);
@@ -213,7 +214,7 @@ namespace Glfw3.Tests
 
                 if (fullscreen)
                     monitor = Glfw.GetPrimaryMonitor();
-                
+
                 windows = new Glfw.Window[1];
                 windows[0] = CreateWindow(monitor);
             }
